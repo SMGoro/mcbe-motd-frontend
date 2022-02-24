@@ -1,6 +1,6 @@
 <template>
   <div id="server-info">
-    <v-card :disabled="loading" :loading="loading" elevation="0">
+    <v-card :disabled="loading" :loading="loading" elevation="0" v-on:click="dialog = true">
       <v-card-text>
         <div class="d-flex">
           <v-card elevation="0" height="80">
@@ -23,18 +23,62 @@
                class="ml-4">
             <h2 class="title" v-html="text_format(this.query_data.motd)"></h2>
             <div class="text-subtitle-1">
+            <v-btn
+                class="mt-1"
+                color="#ff9933"
+                dark
+                depressed
+                small
+                style="margin-left: 10px"
+                tile
+            >
               <v-icon size="16">mdi-server</v-icon>
-              {{ this.query_data.host }}
+              IP：{{ this.query_data.host }} 
+            </v-btn>
+              <v-btn
+                class="mt-1"
+                color="primary"
+                dark
+                depressed
+                small
+                style="margin-left: 10px"
+                tile
+                v-if="join_open" v-on:click="dialog = true">
+              <v-icon size="16">mdi-gamepad-square</v-icon>
+                点击加入
+              </v-btn><br>
             </div>
             <div class="text-subtitle-2">
+            <v-btn
+                class="mt-1"
+                color="#5F9EA0"
+                dark
+                depressed
+                small
+                style="margin-left: 10px"
+                tile
+            >
               <v-icon size="16">mdi-gamepad</v-icon>
-              MCBE: {{ this.query_data.version }} | Protocol: {{ this.query_data.agreement }}
+              游戏版本: {{ this.query_data.version }}
+            </v-btn>
+            <v-btn
+                class="mt-1"
+                color="#00BFFF"
+                dark
+                depressed
+                small
+                style="margin-left: 10px"
+                tile
+            >
+              <v-icon size="16">mdi-api</v-icon>
+              联机协议: {{ this.query_data.agreement }}
+            </v-btn>
             </div>
           </div>
           <div v-else-if="loading === true" class="ml-4">
             <h2 class="title">正在加载</h2>
             <div class="text-subtitle-1">
-              如果迟迟不响应，请刷新页面重试，也许是🐱的api炸了呢
+              如果迟迟不响应，请刷新页面重试，也许是五郎的api炸了呢
             </div>
           </div>
           <div v-else class="ml-4">
@@ -43,20 +87,44 @@
               所谓的携手共进不就是这样吗？如果平坦的道理上只有一个人的宽度，那么我会很开心地走上长满荆棘的道路。 --- 樱小路露娜
             </div>
           </div>
-          <div
+          <!--<div
               class="ml-auto"
               v-if="join_open"
           >
             <v-btn color="primary" small elevation="0" v-on:click="dialog = true">
               加入服务器
             </v-btn>
-          </div>
+          </div>-->
         </div>
         <div class="mb-3">
           <v-row
               v-if="this.query_data !== null && this.query_data.status === true"
               class="pt-4"
           >
+            <v-btn
+                class="mt-1"
+                color="cyan"
+                dark
+                depressed
+                small
+                style="margin-left: 10px"
+                tile
+            >
+              <v-icon size="16">mdi-account-group</v-icon>
+              在线人数: {{ this.query_data.online }} / {{ this.query_data.max }}
+            </v-btn>
+            <v-btn
+                :color="(this.query_data.delay > 50)? 'warning': 'success' "
+                class="mt-1"
+                dark
+                depressed
+                small
+                style="margin-left: 10px"
+                tile
+            >
+              <v-icon size="16">mdi-antenna</v-icon>
+              延迟: {{ this.query_data.delay }} ms
+            </v-btn>
             <v-btn
                 :color="(this.query_data.gamemode === 'Survival')? 'deep-orange': 'red' "
                 class="mt-1"
@@ -70,18 +138,6 @@
             </v-btn>
             <v-btn
                 class="mt-1"
-                color="cyan"
-                dark
-                depressed
-                small
-                style="margin-left: 10px"
-                tile
-            >
-              在线人数: {{ this.query_data.online }} / {{ this.query_data.max }}
-            </v-btn>
-
-            <v-btn
-                class="mt-1"
                 color="indigo"
                 dark
                 depressed
@@ -90,17 +146,6 @@
                 tile
             >
               地图名: {{ this.query_data.level_name }}
-            </v-btn>
-            <v-btn
-                :color="(this.query_data.delay > 50)? 'warning': 'success' "
-                class="mt-1"
-                dark
-                depressed
-                small
-                style="margin-left: 10px"
-                tile
-            >
-              延迟: {{ this.query_data.delay }} ms
             </v-btn>
           </v-row>
           <v-row
