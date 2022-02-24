@@ -72,6 +72,9 @@
                   <v-col cols="12">
                     <v-btn :disabled="loading" block color="primary" @click="update()">查询</v-btn>
                   </v-col>
+                  <v-col cols="12">
+                    <v-btn :disabled="loading" block color="primary" v-on:click="opengame">一键加入服务器</v-btn>
+                  </v-col>
                 </v-row>
               </v-card-text>
             </v-card>
@@ -84,6 +87,35 @@
               sm="12"
               xl="6"
           >
+            <v-card>
+              <v-card-title>
+                <span class="subtitle-1">IMC.RE 服务</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container fluid>
+                  <v-col cols="12">
+                    <v-btn :disabled="loading" block color="primary" href="https://mcs.imc.re/">服务器列表站</v-btn>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-btn :disabled="loading" block color="primary" href="https://mcc.imc.re/">IMC联机大厅</v-btn>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-btn :disabled="loading" block color="primary" href="http://iurl.ltd/imclj">IMC联机教程</v-btn>
+                  </v-col>
+                </v-container>
+              </v-card-text>
+            </v-card>
+            
+          </v-col>
+          <v-col cols="12"></v-col>
+          <v-col
+              cols="12"
+              lg="8"
+              md="8"
+              sm="12"
+              xl="6"
+          >
+              
             <v-card>
               <v-card-title>
                 <span class="subtitle-1">将服务器实时状态嵌入网页</span>
@@ -130,12 +162,11 @@
                           rows="3"
                       ></v-textarea>
                       <div v-if="$vuetify.breakpoint.mdAndUp" class="elevation-2 mb-5 grey pa-3 text-center">
-                        <iframe :src="link + '&demo=true'" border="0" frameborder="no" :height="height" marginheight="0" marginwidth="0"
-                                scrolling=no :width="width"></iframe>
+                        <iframe :src="link + '&demo=true'" border="0" frameborder="no" height=195 marginheight="0" marginwidth="0"
+                                scrolling=no width=500></iframe>
                       </div>
                     </v-col>
                   </v-row>
-
                 </v-container>
               </v-card-text>
 
@@ -175,7 +206,7 @@ export default {
     iframe: null,
     height: '195px',
     width: '500px',
-    link: '/iframe.html?ip=play.easecation.net&port=19132',
+    link: '/iframe.html?ip=play.imc.re&port=19132',
     dark: false,
     snackbar: false,
     text: '复制成功'
@@ -199,7 +230,7 @@ export default {
     let port = router.currentRoute.query.port;
     if (ip === undefined || port === undefined || ip === null || port === null) {
       // 此处是默认显示的服务器状态信息
-      this.input.ip = 'play.easecation.net';
+      this.input.ip = 'play.imc.re';
       this.input.port = 19132;
     } else {
       this.input.ip = ip;
@@ -228,8 +259,8 @@ export default {
       return await axios.get('/api?host=' + ip + ":" + port);
     },
     refreshIframe() {
-      this.link = '//' + window.location.host + '/iframe.html?ip=' + this.input.ip + '&port=' + this.input.port + "&dark=" + this.dark+'&time='+(new Date()).valueOf();
-      this.iframe = '<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="'+ this.width +'" height="'+ this.height +'" scrolling=no src="' + this.link + '"></iframe>';
+      this.link = '//' + window.location.host + '/iframe.html?ip=' + this.input.ip + '&port=' + this.input.port + "&dark=" + this.dark;
+      this.iframe = '<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=500 height=195 scrolling=no src="' + this.link + '"></iframe>';
     },
     async update(ip = null, port = null) {
       this.loading = true;
@@ -247,8 +278,10 @@ export default {
         console.log(query);
         this.loading = false;
       }
-
       this.refreshIframe();
+    },
+    opengame() {
+      window.location.href = ('minecraft://?addExternalServer=IMC.RE查询|' + this.input.ip + ':' + this.input.port); // 新窗口打开外链接
     },
     copyLink() {
       this.copyText(this.iframe, (res) => {
